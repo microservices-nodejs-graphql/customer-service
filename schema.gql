@@ -1,0 +1,140 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CustomerTypeObjectType {
+  id: Float
+  name: String
+  description: String
+}
+
+type QueryResponseCustomerTypeObjectType {
+  total: Int!
+  skip: Int!
+  take: Int!
+  items: [CustomerTypeObjectType!]!
+}
+
+type CustomerObjectType {
+  id: Float
+  customerType: CustomerTypeObjectType
+  numberDocument: String
+  bussinessName: String
+  name: String
+  lastname: String
+}
+
+type QueryResponseCustomerObjectType {
+  total: Int!
+  skip: Int!
+  take: Int!
+  items: [CustomerObjectType!]!
+}
+
+type AccountObjectType {
+  id: Float
+  name: String
+  openingBalance: Float
+}
+
+type QueryResponseAccountObjectType {
+  total: Int!
+  skip: Int!
+  take: Int!
+  items: [AccountObjectType!]!
+}
+
+type Query {
+  accounts(filter: AccountFilterInputType!): QueryResponseAccountObjectType!
+  customers(filter: CustomerFilterInputType!): QueryResponseCustomerObjectType!
+  customerTypes(filter: CustomerTypeFilterInputType!): QueryResponseCustomerTypeObjectType!
+}
+
+input AccountFilterInputType {
+  skip: Int = 1
+  take: Int = 10
+  id: Float
+  name: String
+}
+
+input CustomerFilterInputType {
+  skip: Int = 1
+  take: Int = 10
+  id: Float
+  customerTypeId: Float
+  numberDocument: String
+  bussinessName: String
+  name: String
+  lastname: String
+}
+
+input CustomerTypeFilterInputType {
+  skip: Int = 1
+  take: Int = 10
+  id: Float
+  name: String
+  description: String
+}
+
+type Mutation {
+  createAccount(account: NewAccountInputType!): AccountObjectType!
+  updateAccount(account: UpdateAccountInputType!): AccountObjectType!
+  deleteAccount(account: DeleteAccountInputType!): AccountObjectType!
+  createCustomer(customer: NewCustomerInputType!): CustomerObjectType!
+  updateCustomer(customer: UpdateCustomerInputType!): CustomerObjectType!
+  deleteCustomer(customer: DeleteCustomerInputType!): CustomerObjectType!
+  createCustomerType(customerType: NewCustomerTypeInputType!): CustomerTypeObjectType!
+  updateCustomerType(customerType: UpdateCustomerTypeInputType!): CustomerTypeObjectType!
+  deleteCustomerType(customerType: DeleteCustomerTypeInputType!): CustomerTypeObjectType!
+}
+
+input NewAccountInputType {
+  name: String!
+  openingBalance: String!
+}
+
+input UpdateAccountInputType {
+  id: Float!
+  name: String!
+  openingBalance: String
+}
+
+input DeleteAccountInputType {
+  id: Float!
+}
+
+input NewCustomerInputType {
+  customerTypeId: Float!
+  numberDocument: String!
+  bussinessName: String!
+  name: String!
+  lastname: String!
+}
+
+input UpdateCustomerInputType {
+  id: Float!
+  customerTypeId: Float!
+  numberDocument: String!
+  bussinessName: String
+  name: String
+  lastname: String
+}
+
+input DeleteCustomerInputType {
+  id: Float!
+}
+
+input NewCustomerTypeInputType {
+  name: String!
+  description: String!
+}
+
+input UpdateCustomerTypeInputType {
+  id: Float!
+  name: String!
+  description: String
+}
+
+input DeleteCustomerTypeInputType {
+  id: Float!
+}
