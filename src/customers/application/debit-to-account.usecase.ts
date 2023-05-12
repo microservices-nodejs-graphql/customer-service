@@ -33,7 +33,7 @@ export class DebitToAccountUseCase implements DebitToAccountPort {
         } catch (ex) {
             throw new BussinessException(
                 ExceptionEnum.ERROR_DEBIT_TO_CUSTOMER_ACCOUNT,
-                this.properties.get('expeption.customer_account.debit.error'),
+                this.properties.get('exception.customer_account.debit.error'),
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
