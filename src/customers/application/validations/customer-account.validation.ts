@@ -6,6 +6,7 @@ import { EntityRepositoryPort } from "src/customers/infraestructure/ports/out/en
 import { BussinessException } from "../exceptions/bussiness.exception";
 import { ExceptionEnum } from "../enums/exception.enum";
 import { AccountEntity } from "src/customers/infraestructure/adapters/out/entities/account.entity";
+import { CustomerAccountEntity } from "src/customers/infraestructure/adapters/out/entities/customer-account.entity";
 
 @Injectable()
 export class CustomerAccountValidation {
@@ -30,6 +31,25 @@ export class CustomerAccountValidation {
             throw new BussinessException(
                 ExceptionEnum.ERROR_NOT_FOUND_ACCOUNT,
                 this.properties.get('validation.account.not_found'),
+                HttpStatus.NOT_FOUND
+            );
+        }
+    }
+
+    async validateDebitToAccount(customerAccount: CustomerAccount) {
+        const customerAccountEntity = await this.entityRepositoryPort.getById(customerAccount.id, CustomerAccountEntity);
+        if (!customerAccountEntity) {
+            throw new BussinessException(
+                ExceptionEnum.ERROR_NOT_FOUND_CUSTOMER_ACCOUNT,
+                this.properties.get('validation.customer_account.not_found'),
+                HttpStatus.NOT_FOUND
+            );
+        }
+
+        if (customerAccountEntity.status !== 'ACTIVE') {
+            throw new BussinessException(
+                ExceptionEnum.ERROR_NO_ACTIVE_CUSTOMER_ACCOUNT,
+                this.properties.get('validation.customer_account.account.no_active'),
                 HttpStatus.NOT_FOUND
             );
         }

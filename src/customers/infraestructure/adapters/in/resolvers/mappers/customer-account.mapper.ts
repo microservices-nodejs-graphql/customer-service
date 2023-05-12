@@ -21,6 +21,7 @@ export class CustomerAccountMapper {
     private static mapToDomain(customerAccountInput): CustomerAccount {
         const customerAccount = new CustomerAccount();
         customerAccount.id = customerAccountInput.id;
+        customerAccount.mount = customerAccountInput.mount;
         customerAccount.customer = new Customer();
         customerAccount.customer.id = customerAccountInput.customerId;
         customerAccount.account = new Account();

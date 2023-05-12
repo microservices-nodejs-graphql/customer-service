@@ -34,6 +34,7 @@ import { CustomerAccountRepositoryTypeorm } from "./infraestructure/adapters/out
 import { CreateCustomerAccountUseCase } from "./application/create-customer-account.usecase";
 import { CustomerAccountValidation } from "./application/validations/customer-account.validation";
 import { CustomerAccountResolver } from "./infraestructure/adapters/in/resolvers/customer-account.resolver";
+import { DebitToAccountUseCase } from "./application/debit-to-account.usecase";
 
 @Module({
     imports: [
@@ -66,6 +67,7 @@ import { CustomerAccountResolver } from "./infraestructure/adapters/in/resolvers
         CreateCustomerTypeUseCase,
         UpdateCustomerTypeUseCase,
         DeleteCustomerTypeUseCase,
+        DebitToAccountUseCase,
         CreateCustomerUseCase,
         UpdateCustomerUseCase,
         DeleteCustomerUseCase,

@@ -95,6 +95,7 @@ type Mutation {
   updateCustomerType(customerType: UpdateCustomerTypeInputType!): CustomerTypeObjectType!
   deleteCustomerType(customerType: DeleteCustomerTypeInputType!): CustomerTypeObjectType!
   createCustomerAccount(customerAccount: NewCustomerAccountInputType!): CustomerAccountObjectType!
+  debitToAccount(customerAccount: DebitToAccountInputType!): CustomerAccountObjectType!
 }
 
 input NewAccountInputType {
@@ -151,4 +152,9 @@ input DeleteCustomerTypeInputType {
 input NewCustomerAccountInputType {
   customerId: Float!
   accountId: Float!
+}
+
+input DebitToAccountInputType {
+  id: Float
+  mount: String!
 }
