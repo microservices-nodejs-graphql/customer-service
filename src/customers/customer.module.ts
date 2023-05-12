@@ -33,6 +33,7 @@ import { CustomerAccountEntity } from "./infraestructure/adapters/out/entities/c
 import { CustomerAccountRepositoryTypeorm } from "./infraestructure/adapters/out/typeorm/customer-account-repository.typeorm";
 import { CreateCustomerAccountUseCase } from "./application/create-customer-account.usecase";
 import { CustomerAccountValidation } from "./application/validations/customer-account.validation";
+import { CustomerAccountResolver } from "./infraestructure/adapters/in/resolvers/customer-account.resolver";
 
 @Module({
     imports: [
@@ -57,6 +58,7 @@ import { CustomerAccountValidation } from "./application/validations/customer-ac
         AccountResolver,
         CustomerResolver,
         CustomerTypeResolver,
+        CustomerAccountResolver,
         CreateCustomerAccountUseCase,
         CreateAccountUseCase,
         UpdateAccountUseCase,

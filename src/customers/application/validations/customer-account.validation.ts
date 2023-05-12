@@ -16,7 +16,7 @@ export class CustomerAccountValidation {
     }
 
     async validateCreateCustomerAccount(customerAccount: CustomerAccount) {
-        const customerEntity = this.entityRepositoryPort.getById(customerAccount.customer.id, CustomerEntity);
+        const customerEntity = await this.entityRepositoryPort.getById(customerAccount.customer.id, CustomerEntity);
         if (!customerEntity) {
             throw new BussinessException(
                 ExceptionEnum.ERROR_NOT_FOUND_CUSTOMER,
@@ -25,7 +25,7 @@ export class CustomerAccountValidation {
             );
         }
 
-        const accountEntity = this.entityRepositoryPort.getById(customerAccount.account.id, AccountEntity);
+        const accountEntity = await this.entityRepositoryPort.getById(customerAccount.account.id, AccountEntity);
         if (!accountEntity) {
             throw new BussinessException(
                 ExceptionEnum.ERROR_NOT_FOUND_ACCOUNT,

@@ -44,6 +44,14 @@ type QueryResponseAccountObjectType {
   items: [AccountObjectType!]!
 }
 
+type CustomerAccountObjectType {
+  id: Float
+  customer: CustomerObjectType
+  account: AccountObjectType
+  mount: String
+  status: String
+}
+
 type Query {
   accounts(filter: AccountFilterInputType!): QueryResponseAccountObjectType!
   customers(filter: CustomerFilterInputType!): QueryResponseCustomerObjectType!
@@ -86,6 +94,7 @@ type Mutation {
   createCustomerType(customerType: NewCustomerTypeInputType!): CustomerTypeObjectType!
   updateCustomerType(customerType: UpdateCustomerTypeInputType!): CustomerTypeObjectType!
   deleteCustomerType(customerType: DeleteCustomerTypeInputType!): CustomerTypeObjectType!
+  createCustomerAccount(customerAccount: NewCustomerAccountInputType!): CustomerAccountObjectType!
 }
 
 input NewAccountInputType {
@@ -137,4 +146,9 @@ input UpdateCustomerTypeInputType {
 
 input DeleteCustomerTypeInputType {
   id: Float!
+}
+
+input NewCustomerAccountInputType {
+  customerId: Float!
+  accountId: Float!
 }

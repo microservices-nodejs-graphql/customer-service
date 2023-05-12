@@ -35,6 +35,7 @@ export class PostgresRespositoryAdapter implements EntityRepositoryPort {
   }
 
   async save<T>(entity, entityTarget: EntityTarget<T>) {
+    console.log(entity);
     const sequenceName = Reflect.getMetadata('sequence-name', entity, 'id');
     entity.id = await this.getId(sequenceName);
     entity.logState = 1;
