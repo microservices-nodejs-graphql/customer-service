@@ -16,6 +16,7 @@ import { AccountFilterInputType } from "./inputs/account-filter.input-type";
 import { AccountFilter } from "src/customers/domain/filters/account.filter";
 import { QueryAccountUseCase } from "src/customers/application/query-account.usecase";
 import { QueryAccountPort } from "src/customers/infraestructure/ports/in/query-account.port";
+import { ConfigService } from "src/config/config.service";
 
 @Resolver()
 export class AccountResolver {
@@ -23,7 +24,8 @@ export class AccountResolver {
         @Inject(CreateAccountUseCase) private readonly createAccountPort: CreateAccountPort,
         @Inject(UpdateAccountUseCase) private readonly updateAccountPort: UpdateAccountPort,
         @Inject(DeleteAccountUsecase) private readonly deleteAccountPort: DeleteAccountPort,
-        @Inject(QueryAccountUseCase) private readonly queryAccountPort: QueryAccountPort
+        @Inject(QueryAccountUseCase) private readonly queryAccountPort: QueryAccountPort,
+        private readonly configService: ConfigService
     ) { }
 
     @Query(returns => QueryResponseAccountObjectType)

@@ -10,7 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     CustomerModule,
     TypeOrmModule.forRootAsync({
-      imports:[ConfigurationModule],
+      imports: [ConfigurationModule],
       useFactory: async (configService: ConfigService) => (
         {
           type: 'postgres' as 'postgres',
@@ -26,11 +26,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           entities: ["dist/entity/**/*{.ts,.js}"],
           autoLoadEntities: true
         }
-      ),  
+      ),
       inject: [ConfigService]
     })
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

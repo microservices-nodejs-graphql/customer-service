@@ -8,6 +8,10 @@ import { CustomerAccountEntity } from "../infraestructure/adapters/out/entities/
 import { CustomerAccountEntityMapper } from "./mappers/customer-account.mapper";
 import { ExceptionEnum } from "./enums/exception.enum";
 import { BussinessException } from "./exceptions/bussiness.exception";
+import { ClientProxy } from "@nestjs/microservices";
+import { ConfigService } from "src/config/config.service";
+import { KafkaEventMessageAdapter } from "../infraestructure/adapters/out/kafka-event-message.adapter";
+import { EventMessagePort } from "../infraestructure/ports/out/event-message.port";
 
 @Injectable()
 export class CreateCustomerAccountUseCase implements CreateCustomerAccountPort {
@@ -15,19 +19,24 @@ export class CreateCustomerAccountUseCase implements CreateCustomerAccountPort {
 
     constructor(
         @Inject(PostgresRespositoryAdapter) private readonly entityRepositoryPort: EntityRepositoryPort,
-        private readonly customerAccountValidation: CustomerAccountValidation
+        @Inject(KafkaEventMessageAdapter) private readonly eventMessagePort: EventMessagePort,
+        private readonly customerAccountValidation: CustomerAccountValidation,
+        private readonly configService: ConfigService
     ) {
         this.properties = require('./utils/messages.util');
     }
 
     async createCustomerAccount(customerAccount: CustomerAccount): Promise<CustomerAccount> {
         await this.customerAccountValidation.validateCreateCustomerAccount(customerAccount);
+        
+        let customerAccountEntity;
+        let message = "";
         try {
-            let customerAccountEntity = CustomerAccountEntityMapper.toEntity(customerAccount);
+            customerAccountEntity = CustomerAccountEntityMapper.toEntity(customerAccount);
             customerAccountEntity.mount = "0.0";
             customerAccountEntity.status = "CREATED";
             customerAccountEntity = await this.entityRepositoryPort.save(customerAccountEntity, CustomerAccountEntity)
-            return CustomerAccountEntityMapper.toDomain(customerAccountEntity);
+            message = JSON.stringify({"message": customerAccountEntity, "tableName": "customers_accounts"});
         } catch (ex) {
             throw new BussinessException(
                 ExceptionEnum.ERROR_CREATE_CUSTOMER_ACCOUNT,
@@ -35,5 +44,17 @@ export class CreateCustomerAccountUseCase implements CreateCustomerAccountPort {
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
+
+        try {
+            this.eventMessagePort.sendMessage(this.configService.get('KAFKA_PRODUCER_TOPIC'), message);
+        } catch (ex) {
+            throw new BussinessException(
+                ExceptionEnum.ERROR_SEND_ACCOUNT_MESSAGE,
+                this.properties.get('exception.account.send.error'),
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return CustomerAccountEntityMapper.toDomain(customerAccountEntity);
     }
 }

@@ -35,9 +35,16 @@ import { CreateCustomerAccountUseCase } from "./application/create-customer-acco
 import { CustomerAccountValidation } from "./application/validations/customer-account.validation";
 import { CustomerAccountResolver } from "./infraestructure/adapters/in/resolvers/customer-account.resolver";
 import { DebitToAccountUseCase } from "./application/debit-to-account.usecase";
+import { ConfigurationModule } from "src/config/config.module";
+import { KafkaMessageBrokerEvent } from "./infraestructure/adapters/in/events/kafka-message-broker.event";
+import { MessageBrokerUseCase } from "./application/message-broker.usecase";
+import { KafkaEventMessageAdapter } from "./infraestructure/adapters/out/kafka-event-message.adapter";
+import { ClientsModule, Transport } from "@nestjs/microservices";
+import { ConfigService } from "src/config/config.service";
 
 @Module({
     imports: [
+        ConfigurationModule,
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
             playground: true,
@@ -48,9 +55,26 @@ import { DebitToAccountUseCase } from "./application/debit-to-account.usecase";
             CustomerAccountEntity,
             CustomerEntity,
             CustomerTypeEntity
+        ]),
+        ClientsModule.registerAsync([
+            {
+                name: 'KAFKA_CUSTOMER_SERVICE',
+                imports: [ConfigurationModule],
+                useFactory: async (configService: ConfigService) => ({
+                    transport: Transport.KAFKA,
+                    options: {
+                        client: {
+                            brokers: [configService.get('KAFKA_BROKER')],
+                        }
+                    }
+                }),
+                inject: [ConfigService],
+            }
         ])
     ],
-    controllers: [],
+    controllers: [
+        KafkaMessageBrokerEvent
+    ],
     providers: [
         {
             provide: APP_FILTER,
@@ -74,6 +98,7 @@ import { DebitToAccountUseCase } from "./application/debit-to-account.usecase";
         QueryAccountUseCase,
         QueryCustomerTypeUseCase,
         QueryCustomerUseCase,
+        MessageBrokerUseCase,
         AccountRepositoryTypeorm,
         CustomerAccountRepositoryTypeorm,
         CustomerRepositoryTypeorm,
@@ -82,7 +107,8 @@ import { DebitToAccountUseCase } from "./application/debit-to-account.usecase";
         CustomerValidation,
         CustomerTypeValidation,
         CustomerAccountValidation,
-        PostgresRespositoryAdapter
+        PostgresRespositoryAdapter,
+        KafkaEventMessageAdapter
     ],
 })
 export class CustomerModule { }

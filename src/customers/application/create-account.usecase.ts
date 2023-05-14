@@ -8,29 +8,32 @@ import { AccountEntity } from "../infraestructure/adapters/out/entities/account.
 import { BussinessException } from "./exceptions/bussiness.exception";
 import { ExceptionEnum } from "./enums/exception.enum";
 import { AccountEntityMapper } from "./mappers/account-entity.mapper";
+import { ClientProxy } from "@nestjs/microservices";
+import { ConfigService } from "src/config/config.service";
 
 @Injectable()
 export class CreateAccountUseCase implements CreateAccountPort {
     properties: any;
 
     constructor(
-        @Inject(PostgresRespositoryAdapter) readonly entityRepositoryPort: EntityRepositoryPort,
-        private readonly accountValidation: AccountValidation) {
+        @Inject(
+            PostgresRespositoryAdapter) readonly entityRepositoryPort: EntityRepositoryPort,
+            private readonly accountValidation: AccountValidation) {
         this.properties = require('./utils/messages.util');
     }
 
     async createAccount(account: Account): Promise<Account> {
         await this.accountValidation.validateCreateAccount(account);
+            
         try {
-            let entity = await this.entityRepositoryPort.save(AccountEntityMapper.toEntity(account), AccountEntity)
-            return AccountEntityMapper.toDomain(entity);
+            const entity = await this.entityRepositoryPort.save(AccountEntityMapper.toEntity(account), AccountEntity)
+            return AccountEntityMapper.toDomain(entity);         
         } catch (ex) {
             throw new BussinessException(
                 ExceptionEnum.ERROR_CREATE_ACCOUNT,
                 this.properties.get('exception.account.create.error'),
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
-        }
+        }        
     }
-
 }
